@@ -11,15 +11,14 @@ device = torch.device("cuda")
 
 import sys
 
-sys.path.append("/data1/hhx/public/github")
-from utils import read_json, save_list_to_json
+sys.path.append("../../../")
+from utils import read_json, save_list_to_json, qwen_wrap_overall_instruction_prompt,llama2_wrap_overall_instruction_prompt
 from config import prompt_templates
 
 
 
 
 def extract_step_answer(text):
-    # text = data["response"][0]
     text = text.replace(" Answer:\n","")
     lines = text.split('\n')
     step_n_1 = ""
@@ -32,17 +31,13 @@ def extract_step_answer(text):
     return step_1, step_n_1
 
 @torch.no_grad()
-def get_response(tokenizer,model, lora_name, prompt):
+def get_response(tokenizer,model, lora_name, prompt,model_name):
     sampling_params = SamplingParams(temperature=0.7, top_p=0.8, repetition_penalty=1.05, max_tokens=1024)
-    messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-            ]
-    text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-            )
+    if model_name == "qwen":
+            text = qwen_wrap_overall_instruction_prompt(tokenizer, prompt)
+        if model_name == "llama2":
+            text = llama2_wrap_overall_instruction_prompt(prompt)
+
     with torch.no_grad():
         if args.lora_name =="":
             outputs = model.generate([text], sampling_params)
@@ -66,18 +61,18 @@ def obtain_four_type_conf(question, response, prompt_template, tokenizer, model,
     conf_answer = []
     for text in texts:
         prompt = prompt_template.replace(" hhx ", text)
-        resp = get_response(tokenizer, model, lora_name, prompt)
+        resp = get_response(tokenizer, model, lora_name, prompt, args.model_name)
         conf_answer.append(resp)
     return conf_answer
 
 def main(args):
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_path)
 
     
     if args.lora_name == "":
-        model = LLM(model = args.model_name,gpu_memory_utilization=0.7)
+        model = LLM(model = args.model_path,gpu_memory_utilization=0.7)
     else:
-        model = LLM(model = args.model_name, enable_lora = True)
+        model = LLM(model = args.model_path, enable_lora = True)
     print("!!!load the model successfully!")
 
     # Prepare your data
@@ -101,7 +96,6 @@ def main(args):
                 prompt = prompt_template.replace(" hhx ", example['question'])
                 resp = get_response(tokenizer,model,args.lora_name,prompt)
                 example['response'] = resp
-            # pdb.set_trace()
             res.append(example)
             save_list_to_json(res,args.savePath)
     
@@ -134,8 +128,10 @@ def main(args):
 if __name__ =="__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--model_name", type=str, default="/data1/hhx/ckp/conf/qwen7b-qwen7b-full/checkpoint-1000",
+    parser.add_argument("--model_path", type=str, default="/data1/hhx/ckp/conf/qwen7b-qwen7b-full/checkpoint-1000",
                         help="the name of model")
+    parser.add_argument("--model_name", type=str, default="qwen",
+                        help="the name of model, [qwen, llama2], you can set other models")                    
     parser.add_argument("--lora_name", type=str, default="")
     parser.add_argument("--dataPath", type=str, default="/data1/hhx/public/confidence/LLMConfidence/methods/ours/data/test/CSQA_result_808.json")
     parser.add_argument("--savePath", type=str, default="/data1/hhx/public/confidence/LLMConfidence/methods/ours/data/test/CSQA_result_808_with_conf.json")
@@ -143,6 +139,3 @@ if __name__ =="__main__":
     args = parser.parse_args()
     main(args)
     
-
-
-
