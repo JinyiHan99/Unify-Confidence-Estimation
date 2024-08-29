@@ -11,7 +11,7 @@ device = torch.device("cuda")
 
 import sys
 
-sys.path.append("../../../")
+sys.path.append("/data1/hhx/public/github")
 from utils import read_json, save_list_to_json, qwen_wrap_overall_instruction_prompt,llama2_wrap_overall_instruction_prompt
 from config import prompt_templates
 
@@ -139,3 +139,6 @@ if __name__ =="__main__":
     args = parser.parse_args()
     main(args)
     
+
+
+
