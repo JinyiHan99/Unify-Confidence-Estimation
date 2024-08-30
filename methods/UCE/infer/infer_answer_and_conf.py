@@ -35,7 +35,7 @@ def get_response(tokenizer,model, lora_name, prompt,model_name):
     sampling_params = SamplingParams(temperature=0.7, top_p=0.8, repetition_penalty=1.05, max_tokens=1024)
     if model_name == "qwen":
             text = qwen_wrap_overall_instruction_prompt(tokenizer, prompt)
-        if model_name == "llama2":
+    if model_name == "llama2":
             text = llama2_wrap_overall_instruction_prompt(prompt)
 
     with torch.no_grad():
