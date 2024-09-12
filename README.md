@@ -1,4 +1,4 @@
-# UCE
+# [UCE: Unified Confidence Estimation Throughout the Generation of LLMs](./image/UCE.pdf)
 
 Unified Condidence Esitmation (UCE)  provides the accurate and continuous confidence estimates throughout the generation process of an LLM. It is also a universal method that offers confidence estimates for any given text sequence.
 
@@ -50,7 +50,7 @@ We also provide the code of several popular confidence estimation methods. you c
   * Run:cd /methods/PIK
     python construct_data_PIK.py
     --model_path the_base_model_path
-    --data_path  /data/test/CSQA_test.json
+    --data_path  /data/test/CSQA_test.jsonP
     --save_path  save_data_path
     --sample_num 30
     --T 1
