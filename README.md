@@ -1,6 +1,6 @@
-# [UCE: Unified Confidence Estimation Throughout the Generation of LLMs](./image/UCE.pdf)
+# UCE: Unified Confidence Estimation Throughout the Generation of LLMs
 
-Unified Condidence Esitmation (UCE)  provides the accurate and continuous confidence estimates throughout the generation process of an LLM. It is also a universal method that offers confidence estimates for any given text sequence.
+Unified Condidence Esitmation (UCE) [[pdf]](./image/UCE.pdf) provides the accurate and continuous confidence estimates throughout the generation process of an LLM. It is also a universal method that offers confidence estimates for any given text sequence.
 
 * we develop a pipeline to construct training data to capture the inherent certainty of LLMs, and design data formats for three different scenarios to improve the generalization capability of LLM confidence estimation.
 * we propose the Reverse Confidence Integration strategy, which integrates confidence scores from subsequent text sequences to provide a more accurate and holistic confidence estimation for the current text sequence.
@@ -9,7 +9,7 @@ Unified Condidence Esitmation (UCE)  provides the accurate and continuous confid
 
 # Training Data
 
-* we provide the confidence estimation training data on the GSM8K, CSQA and TrivalQA dataset, you can find them on the fold `/data/UCE/XX/confData. We provide two files on each dataset using two different base models. For example, The file LlaMA-7B.json is from LLama2-7b.`
+* we provide the confidence estimation training data on the GSM8K, CSQA and TrivalQA dataset, you can find them on the fold `/data/UCE/XX/confData`. We provide two files on each dataset using two different base models. For example, The file `LlaMA-7B.json` is from LLama2-7b.
 * If you want to construct the confidence estimation training data using other base models.  The pipelines is following:
 
   * Before constructing theconfidence estimation training data, you'd better use format data to regularize the format of the model's answer. We provide the formatted data on three dataset, and you can find them on the fold `/data/UCE/XX/formatData`.  Then you can employ instruction training using <instruction, question, formatted_response> to obtain the formatted model checkpoints. For ift, we recommend you to use the  [llama-factory](l)
