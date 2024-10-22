@@ -47,7 +47,9 @@ We also provide the code of several popular confidence estimation methods. you c
 
 * P(IK): It trains a logistic regression with the additional value ``head" added to the model to output the confidence estimated. [[Language Models (Mostly) Know What They Know]](https://arxiv.org/abs/2207.05221)
 
-  * Run:cd /methods/PIK
+  * Run:
+    ```
+    cd /methods/PIK
     python construct_data_PIK.py
     --model_path the_base_model_path
     --data_path  /data/test/CSQA_test.jsonP
@@ -55,6 +57,7 @@ We also provide the code of several popular confidence estimation methods. you c
     --sample_num 30
     --T 1
     --size 4 # the prompt size when using VLLM to infer
+    ```
 * First-Prob: It uses the logits of the first token of LLM's generated answer as the confidence estimate.  [[Whose Opinions Do Language Models Reflect?]](https://arxiv.org/abs/2303.17548)
 
   * Run:
@@ -129,3 +132,11 @@ We also provide the code of several popular confidence estimation methods. you c
         --T 1 \
         --size 16
     ```
+
+# Results
+
+We demonstrate that **base models provide the accurate confidence estimates for any given text sequence on three datasets after using UCE**. The overall results are shown in Table1 and Table2. The results in these two tables are the average values. Particularly, **our method consistently outperforms all baselines in terms of ECE and AUROC, and shows excellent calibration capability across all datasets.** 
+
+![Table1](image/Table1.jpg)
+![Table2](image/Table2.jpg)
+
